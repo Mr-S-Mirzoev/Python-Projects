@@ -1,0 +1,9 @@
+[submodule "Bot based on recomendative system"]
+	path = Bot based on recomendative system
+	url = git@github.com:Mr-S-Mirzoev/Bots.git
+[submodule "Traverser for real estate website"]
+	path = Traverser for real estate website
+	url = git@github.com:Mr-S-Mirzoev/RightMove-Traverser.git
+[submodule "DictoApp"]
+	path = DictoApp
+	url = git@github.com:Mr-S-Mirzoev/DictoApp.git
