@@ -3,9 +3,6 @@ from bs4 import BeautifulSoup
 from abc import ABC, abstractmethod
 from parse import parse
 from random import choice
-from copy import deepcopy
-import csv
-from datetime import datetime
 
 databases = ['https://www.its.porn/', 'https://www.xnxx.com/']
 
@@ -19,14 +16,27 @@ class Database:
 
 class ItsPorn(Database):
     def get_random_video(self):
-        #yet not making difference if it is ItsPorn or not since all is ItsPorn
-        okay_vids = list()
-        with open('./metainfo/shared_videos.csv', 'r') as wr_file:
-            fieldnames = ['timestamp', 'contentId', 'link', 'title', 'text', 'tags']
-            reader = csv.DictWriter(wr_file, fieldnames=fieldnames)
-            for line in reader:
-                if line['timestamp'] - da # stays not more than 2 days from current date
+        url = self.link
+        response = requests.get(url)
 
+        soup = BeautifulSoup(response.text, 'html.parser')
+        videos = list()
+        for links in soup.find_all("div", "item thumb"):
+            html_part = str(links.a)
+            result = parse("<a{}href={} title={}>{}data-original={} height={}</a>", html_part)
+            info = dict()
+            info["link"] = result[1][1:-1]
+            info["image"] = result[4][1:-1]
+
+            title = result[2][1:-1]
+            index = len(title)
+            while title[index - 1].isnumeric():
+                index -= 1
+            info["title"] = title[:index]
+            videos.append(info)
+            #print(info, end='\n\n\n')
+        
+        return choice(videos)
 
 def get_database_by_name(name):
     if name == 'https://www.its.porn/':
@@ -69,6 +79,3 @@ class PornWorker:
                 if self.check_if_is_category(val):
                     cats.append(val)
         return cats
-
-#itsp = ItsPorn(databases[0])
-#print(itsp.get_random_video())
